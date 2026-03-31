@@ -19,71 +19,73 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center gap-12 p-8 bg-zinc-950">
-      <div className="text-center">
-        <div className="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-full px-4 py-1.5 text-green-400 text-xs font-semibold mb-6">
-          <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block" />
-          LIVE — Monitoreando en tiempo real
+    <main className="min-h-screen bg-zinc-950 flex flex-col justify-center px-12 max-w-3xl mx-auto">
+      <div className="mb-16">
+        <div className="flex items-center gap-2 mb-8">
+          <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+          <span className="text-green-400 text-xs tracking-widest uppercase">
+            Live
+          </span>
         </div>
-        <h1 className="text-6xl font-bold text-white mb-4">
+        <h1 className="text-7xl font-bold text-white mb-4">
           Ping<span className="text-green-400">Map</span>
         </h1>
-        <p className="text-zinc-400 text-lg max-w-md mx-auto">
+        <p className="text-zinc-500 text-xl max-w-md">
           Monitorea tus servicios en tiempo real y visualízalos en un mapa
           mundial
         </p>
       </div>
 
       {stats && (
-        <div className="grid grid-cols-3 gap-6 w-full max-w-lg">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-center">
-            <p className="text-2xl font-bold text-white">
+        <div className="flex gap-16 mb-16">
+          <div>
+            <p className="text-4xl font-bold text-white">
               {stats.total_monitors}
             </p>
-            <p className="text-zinc-500 text-xs mt-1">Monitores activos</p>
+            <p className="text-zinc-600 text-sm mt-1">monitores activos</p>
           </div>
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-center">
-            <p className="text-2xl font-bold text-white">
+          <div>
+            <p className="text-4xl font-bold text-white">
               {stats.total_checks}
             </p>
-            <p className="text-zinc-500 text-xs mt-1">Checks realizados</p>
+            <p className="text-zinc-600 text-sm mt-1">checks realizados</p>
           </div>
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-center">
-            <p className="text-2xl font-bold text-green-400">
-              {stats.uptime_percent ?? 100}%
+          <div>
+            <p className="text-4xl font-bold text-green-400">
+              {stats.uptime_percent}%
             </p>
-            <p className="text-zinc-500 text-xs mt-1">Uptime global</p>
+            <p className="text-zinc-600 text-sm mt-1">uptime global</p>
           </div>
         </div>
       )}
 
-      <div className="flex gap-4 flex-wrap justify-center">
+      <div className="flex gap-6 items-center">
         <Link
           href="/dashboard"
-          className="bg-green-500 hover:bg-green-400 text-black font-bold px-6 py-3 rounded-lg transition-colors"
+          className="bg-green-500 hover:bg-green-400 text-black font-bold px-6 py-3 rounded-lg transition-colors text-sm"
         >
-          Ir al Dashboard
+          Dashboard
         </Link>
         <Link
           href="/map"
-          className="border border-zinc-700 hover:border-zinc-500 text-white px-6 py-3 rounded-lg transition-colors"
+          className="text-zinc-400 hover:text-white transition-colors text-sm"
         >
-          Ver Mapa
+          Ver Mapa →
         </Link>
         <Link
           href="/status"
-          className="border border-zinc-700 hover:border-green-500/50 text-zinc-400 hover:text-green-400 px-6 py-3 rounded-lg transition-colors text-sm"
+          className="text-zinc-400 hover:text-white transition-colors text-sm"
         >
-          Ver Status →
+          Status →
         </Link>
       </div>
 
-      <p className="text-zinc-600 text-sm">
+      <p className="mt-16 text-zinc-700 text-xs">
         Desplegado en{" "}
         <a
           href="https://cubepath.com"
           target="_blank"
-          className="text-green-600 hover:text-green-400"
+          className="text-zinc-500 hover:text-green-400 transition-colors"
         >
           CubePath
         </a>

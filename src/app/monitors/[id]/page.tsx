@@ -54,14 +54,14 @@ export default function MonitorDetail() {
   if (loading)
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <p className="text-zinc-500">Cargando...</p>
+        <p className="text-zinc-600 text-sm">Cargando...</p>
       </div>
     );
 
   if (!monitor)
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <p className="text-zinc-500">Monitor no encontrado</p>
+        <p className="text-zinc-600 text-sm">Monitor no encontrado</p>
       </div>
     );
 
@@ -77,19 +77,19 @@ export default function MonitorDetail() {
   }));
 
   return (
-    <div className="min-h-screen bg-zinc-950 p-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <a
-              href="/dashboard"
-              className="text-zinc-500 hover:text-white text-sm transition-colors"
-            >
-              ← Dashboard
-            </a>
-            <div
-              className={`w-3 h-3 rounded-full ${
+    <div className="min-h-screen bg-zinc-950 px-12 py-10 max-w-4xl mx-auto">
+      {/* Header */}
+      <div className="mb-12">
+        <a
+          href="/dashboard"
+          className="text-zinc-600 text-xs hover:text-zinc-400 transition-colors"
+        >
+          ← dashboard
+        </a>
+        <div className="flex items-center justify-between mt-1">
+          <div className="flex items-center gap-3">
+            <span
+              className={`w-2 h-2 rounded-full flex-shrink-0 ${
                 monitor.last_status === null
                   ? "bg-zinc-600"
                   : monitor.last_status
@@ -97,120 +97,113 @@ export default function MonitorDetail() {
                     : "bg-red-500"
               }`}
               style={
-                monitor.last_status ? { boxShadow: "0 0 10px #4ade80" } : {}
+                monitor.last_status ? { boxShadow: "0 0 8px #4ade80" } : {}
               }
             />
-            <div>
-              <h1 className="text-2xl font-bold text-white">{monitor.name}</h1>
-              <p className="text-zinc-500 text-sm">{monitor.url}</p>
-            </div>
+            <h1 className="text-2xl font-bold text-white">{monitor.name}</h1>
+            <span className="text-zinc-600 text-sm">{monitor.url}</span>
           </div>
           <span
-            className={`text-sm font-bold px-4 py-2 rounded-full ${
+            className={`text-sm font-bold ${
               monitor.last_status === null
-                ? "bg-zinc-800 text-zinc-500"
+                ? "text-zinc-600"
                 : monitor.last_status
-                  ? "bg-green-500/10 text-green-400"
-                  : "bg-red-500/10 text-red-400"
+                  ? "text-green-400"
+                  : "text-red-400"
             }`}
           >
             {monitor.last_status === null
-              ? "PENDIENTE"
+              ? "pendiente"
               : monitor.last_status
-                ? "ONLINE"
-                : "OFFLINE"}
+                ? "online"
+                : "offline"}
           </span>
         </div>
+      </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-center">
-            <p className="text-3xl font-bold text-green-400">{uptime}%</p>
-            <p className="text-zinc-500 text-xs mt-1">Uptime</p>
-          </div>
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-center">
-            <p className="text-3xl font-bold text-white">
-              {monitor.avg_latency
-                ? Math.round(monitor.avg_latency) + "ms"
-                : "—"}
-            </p>
-            <p className="text-zinc-500 text-xs mt-1">Latencia promedio</p>
-          </div>
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-center">
-            <p className="text-3xl font-bold text-white">
-              {monitor.total_checks}
-            </p>
-            <p className="text-zinc-500 text-xs mt-1">Total checks</p>
-          </div>
+      {/* Stats */}
+      <div className="flex gap-12 mb-12 pb-8 border-b border-zinc-900">
+        <div>
+          <p className="text-3xl font-bold text-green-400">{uptime}%</p>
+          <p className="text-zinc-600 text-xs mt-1">uptime</p>
         </div>
-
-        {/* Gráfica de latencia */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 mb-6">
-          <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-6">
-            Latencia — últimos 90 checks
-          </h2>
-          <ResponsiveContainer width="100%" height={200}>
-            <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
-              <XAxis
-                dataKey="time"
-                tick={{ fill: "#52525b", fontSize: 10 }}
-                interval={10}
-              />
-              <YAxis tick={{ fill: "#52525b", fontSize: 10 }} unit="ms" />
-              <Tooltip
-                contentStyle={{
-                  background: "#18181b",
-                  border: "1px solid #27272a",
-                  borderRadius: "8px",
-                  color: "#fff",
-                }}
-                formatter={(val: number) => [`${val}ms`, "Latencia"]}
-              />
-              <Line
-                type="monotone"
-                dataKey="latency"
-                stroke="#4ade80"
-                strokeWidth={2}
-                dot={false}
-                connectNulls={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+        <div>
+          <p className="text-3xl font-bold text-white">
+            {monitor.avg_latency ? Math.round(monitor.avg_latency) + "ms" : "—"}
+          </p>
+          <p className="text-zinc-600 text-xs mt-1">latencia promedio</p>
         </div>
+        <div>
+          <p className="text-3xl font-bold text-white">
+            {monitor.total_checks}
+          </p>
+          <p className="text-zinc-600 text-xs mt-1">total checks</p>
+        </div>
+      </div>
 
-        {/* Historial de checks */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
-          <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4">
-            Historial reciente
-          </h2>
-          <div className="space-y-2 max-h-80 overflow-y-auto">
-            {checks.map((c) => (
-              <div
-                key={c.id}
-                className="flex items-center justify-between py-2 border-b border-zinc-800 last:border-0"
-              >
-                <div className="flex items-center gap-3">
-                  <span
-                    className={`text-xs font-bold px-2 py-0.5 rounded ${
-                      c.ok
-                        ? "bg-green-500/10 text-green-400"
-                        : "bg-red-500/10 text-red-400"
-                    }`}
-                  >
-                    {c.ok ? "OK" : "FAIL"}
-                  </span>
-                  <span className="text-zinc-500 text-xs">
-                    {new Date(c.checked_at).toLocaleString()}
-                  </span>
-                </div>
-                <div className="flex items-center gap-4 text-xs text-zinc-400">
-                  <span>HTTP {c.status || "—"}</span>
-                  <span className="font-mono">{c.latency}ms</span>
-                </div>
+      {/* Gráfica */}
+      <div className="mb-12">
+        <p className="text-zinc-600 text-xs uppercase tracking-widest mb-6">
+          Latencia — últimos 90 checks
+        </p>
+        <ResponsiveContainer width="100%" height={180}>
+          <LineChart data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#18181b" />
+            <XAxis
+              dataKey="time"
+              tick={{ fill: "#3f3f46", fontSize: 10 }}
+              interval={10}
+            />
+            <YAxis tick={{ fill: "#3f3f46", fontSize: 10 }} unit="ms" />
+            <Tooltip
+              contentStyle={{
+                background: "#09090b",
+                border: "1px solid #18181b",
+                borderRadius: "6px",
+                color: "#fff",
+                fontSize: "12px",
+              }}
+              formatter={(val: number) => [`${val}ms`, "latencia"]}
+            />
+            <Line
+              type="monotone"
+              dataKey="latency"
+              stroke="#4ade80"
+              strokeWidth={1.5}
+              dot={false}
+              connectNulls={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Historial */}
+      <div>
+        <p className="text-zinc-600 text-xs uppercase tracking-widest mb-4">
+          Historial reciente
+        </p>
+        <div className="space-y-0 max-h-80 overflow-y-auto">
+          {checks.map((c, i) => (
+            <div
+              key={c.id}
+              className={`flex items-center justify-between py-3 ${i > 0 ? "border-t border-zinc-900" : ""}`}
+            >
+              <div className="flex items-center gap-3">
+                <span
+                  className={`text-xs font-bold w-8 ${c.ok ? "text-green-400" : "text-red-400"}`}
+                >
+                  {c.ok ? "OK" : "FAIL"}
+                </span>
+                <span className="text-zinc-600 text-xs">
+                  {new Date(c.checked_at).toLocaleString()}
+                </span>
               </div>
-            ))}
-          </div>
+              <div className="flex items-center gap-6 text-xs text-zinc-500">
+                <span>HTTP {c.status || "—"}</span>
+                <span className="font-mono">{c.latency}ms</span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
