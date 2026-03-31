@@ -18,7 +18,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const { name, url, interval } = await req.json();
+  const { name, url, interval, webhook_url } = await req.json();
 
   if (!name || !url) {
     return NextResponse.json(
@@ -28,8 +28,8 @@ export async function POST(req: Request) {
   }
 
   const { rows } = await query(
-    `INSERT INTO monitors (name, url, interval) VALUES ($1, $2, $3) RETURNING *`,
-    [name, url, interval ?? 60],
+    `INSERT INTO monitors (name, url, interval, webhook_url) VALUES ($1, $2, $3, $4) RETURNING *`,
+    [name, url, interval ?? 60, webhook_url ?? null],
   );
 
   return NextResponse.json(rows[0], { status: 201 });

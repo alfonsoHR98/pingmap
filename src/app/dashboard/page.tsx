@@ -31,6 +31,7 @@ export default function Dashboard() {
     total_checks: number;
     uptime_percent: number;
   } | null>(null);
+  const [webhook, setWebhook] = useState("");
 
   async function fetchMonitors() {
     const res = await fetch("/api/monitors");
@@ -57,8 +58,9 @@ export default function Dashboard() {
     await fetch("/api/monitors", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, url }),
+      body: JSON.stringify({ name, url, webhook_url: webhook }),
     });
+    setWebhook("");
     setName("");
     setUrl("");
     setAdding(false);
@@ -122,7 +124,7 @@ export default function Dashboard() {
           <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4">
             Agregar Monitor
           </h2>
-          <div className="flex gap-3">
+          <div className="flex gap-3 mb-3">
             <input
               type="text"
               placeholder="Nombre"
@@ -145,6 +147,13 @@ export default function Dashboard() {
               {adding ? "..." : "+ Agregar"}
             </button>
           </div>
+          <input
+            type="text"
+            placeholder="Webhook URL (opcional) — se dispara cuando el servicio cae o se recupera"
+            value={webhook}
+            onChange={(e) => setWebhook(e.target.value)}
+            className="bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-green-500 w-full"
+          />
         </div>
 
         <div className="space-y-3">
