@@ -49,6 +49,7 @@ export default function MapView({ monitors }: { monitors: Monitor[] }) {
         url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
         attribution='&copy; <a href="https://carto.com/">CARTO</a>'
       />
+
       {monitors.map((m) => {
         const pos = getCoords(m.url);
         const online = m.last_status;
@@ -56,32 +57,50 @@ export default function MapView({ monitors }: { monitors: Monitor[] }) {
           <CircleMarker
             key={m.id}
             center={pos}
-            radius={online ? 10 : 8}
+            radius={12}
             pathOptions={{
               color: online ? "#4ade80" : "#ef4444",
               fillColor: online ? "#4ade80" : "#ef4444",
-              fillOpacity: 0.8,
-              weight: 2,
+              fillOpacity: 0.9,
+              weight: online ? 3 : 2,
             }}
           >
-            <Popup className="dark-popup">
+            <Popup>
               <div
                 style={{
                   background: "#18181b",
                   color: "#fff",
-                  padding: "8px",
+                  padding: "10px",
                   borderRadius: "8px",
-                  minWidth: "160px",
+                  minWidth: "180px",
+                  border: "1px solid #27272a",
                 }}
               >
-                <p style={{ fontWeight: "bold", marginBottom: "4px" }}>
-                  {m.name}
-                </p>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    marginBottom: "6px",
+                  }}
+                >
+                  <span
+                    style={{
+                      width: "8px",
+                      height: "8px",
+                      borderRadius: "50%",
+                      background: online ? "#4ade80" : "#ef4444",
+                      display: "inline-block",
+                      boxShadow: online ? "0 0 6px #4ade80" : "none",
+                    }}
+                  />
+                  <strong style={{ fontSize: "14px" }}>{m.name}</strong>
+                </div>
                 <p
                   style={{
                     color: "#71717a",
-                    fontSize: "12px",
-                    marginBottom: "8px",
+                    fontSize: "11px",
+                    marginBottom: "6px",
                   }}
                 >
                   {m.url}
@@ -90,17 +109,24 @@ export default function MapView({ monitors }: { monitors: Monitor[] }) {
                   style={{
                     color: online ? "#4ade80" : "#ef4444",
                     fontWeight: "bold",
+                    fontSize: "12px",
                   }}
                 >
                   {online === null
                     ? "Pendiente"
                     : online
-                      ? "● ONLINE"
-                      : "● OFFLINE"}
+                      ? "ONLINE"
+                      : "OFFLINE"}
                 </p>
                 {m.avg_latency && (
-                  <p style={{ color: "#a1a1aa", fontSize: "12px" }}>
-                    {Math.round(m.avg_latency)}ms promedio
+                  <p
+                    style={{
+                      color: "#a1a1aa",
+                      fontSize: "11px",
+                      marginTop: "4px",
+                    }}
+                  >
+                    ⚡ {Math.round(m.avg_latency)}ms promedio
                   </p>
                 )}
               </div>
