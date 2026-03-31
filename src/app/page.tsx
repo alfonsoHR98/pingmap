@@ -1,194 +1,93 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
-import UptimeBar from "@/components/UptimeBar";
 
-interface Check {
-  ok: boolean;
-  checked_at: string;
-}
-
-interface Monitor {
-  id: string;
-  name: string;
-  url: string;
-  active: boolean;
+interface Stats {
+  total_monitors: number;
   total_checks: number;
-  successful_checks: number;
-  avg_latency: number;
-  last_status: boolean;
+  uptime_percent: number;
 }
 
-export default function Dashboard() {
-  const [monitors, setMonitors] = useState<Monitor[]>([]);
-  const [checks, setChecks] = useState<Record<string, Check[]>>({});
-  const [loading, setLoading] = useState(true);
-  const [name, setName] = useState("");
-  const [url, setUrl] = useState("");
-  const [adding, setAdding] = useState(false);
-
-  async function fetchMonitors() {
-    const res = await fetch("/api/monitors");
-    const data = await res.json();
-    setMonitors(data);
-    setLoading(false);
-    // Fetch checks para cada monitor
-    data.forEach(async (m: Monitor) => {
-      const r = await fetch(`/api/checks?monitorId=${m.id}`);
-      const c = await r.json();
-      setChecks((prev) => ({ ...prev, [m.id]: c }));
-    });
-  }
-
-  async function addMonitor() {
-    if (!name || !url) return;
-    setAdding(true);
-    await fetch("/api/monitors", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, url }),
-    });
-    setName("");
-    setUrl("");
-    setAdding(false);
-    fetchMonitors();
-  }
+export default function Home() {
+  const [stats, setStats] = useState<Stats | null>(null);
 
   useEffect(() => {
-    fetchMonitors();
-    const interval = setInterval(fetchMonitors, 30000);
-    return () => clearInterval(interval);
+    fetch("/api/stats")
+      .then((r) => r.json())
+      .then(setStats);
   }, []);
 
-  const uptime = (m: Monitor) => {
-    if (!m.total_checks || m.total_checks == 0) return "—";
-    return ((m.successful_checks / m.total_checks) * 100).toFixed(1) + "%";
-  };
-
   return (
-    <div className="min-h-screen bg-zinc-950 p-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold">
-            Ping<span className="text-green-400">Map</span>
-            <span className="text-zinc-500 text-sm font-normal ml-3">
-              Dashboard
-            </span>
-          </h1>
-          <a
-            href="/map"
-            className="text-zinc-400 hover:text-white text-sm transition-colors"
-          >
-            Ver Mapa →
-          </a>
+    <main className="min-h-screen flex flex-col items-center justify-center gap-12 p-8 bg-zinc-950">
+      <div className="text-center">
+        <div className="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-full px-4 py-1.5 text-green-400 text-xs font-semibold mb-6">
+          <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block" />
+          LIVE — Monitoreando en tiempo real
         </div>
+        <h1 className="text-6xl font-bold text-white mb-4">
+          Ping<span className="text-green-400">Map</span>
+        </h1>
+        <p className="text-zinc-400 text-lg max-w-md mx-auto">
+          Monitorea tus servicios en tiempo real y visualízalos en un mapa
+          mundial
+        </p>
+      </div>
 
-        {/* Agregar monitor */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 mb-8">
-          <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4">
-            Agregar Monitor
-          </h2>
-          <div className="flex gap-3">
-            <input
-              type="text"
-              placeholder="Nombre"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-green-500 w-48"
-            />
-            <input
-              type="text"
-              placeholder="https://tuservicio.com"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              className="bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-green-500 flex-1"
-            />
-            <button
-              onClick={addMonitor}
-              disabled={adding}
-              className="bg-green-500 hover:bg-green-400 disabled:opacity-50 text-black font-bold px-5 py-2 rounded-lg text-sm transition-colors"
-            >
-              {adding ? "..." : "+ Agregar"}
-            </button>
+      {stats && (
+        <div className="grid grid-cols-3 gap-6 w-full max-w-lg">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-center">
+            <p className="text-2xl font-bold text-white">
+              {stats.total_monitors}
+            </p>
+            <p className="text-zinc-500 text-xs mt-1">Monitores activos</p>
+          </div>
+          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-center">
+            <p className="text-2xl font-bold text-white">
+              {stats.total_checks}
+            </p>
+            <p className="text-zinc-500 text-xs mt-1">Checks realizados</p>
+          </div>
+          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-center">
+            <p className="text-2xl font-bold text-green-400">
+              {stats.uptime_percent ?? 100}%
+            </p>
+            <p className="text-zinc-500 text-xs mt-1">Uptime global</p>
           </div>
         </div>
+      )}
 
-        {/* Lista de monitores */}
-        <div className="space-y-3">
-          {loading && (
-            <div className="text-zinc-500 text-sm text-center py-12">
-              Cargando monitores...
-            </div>
-          )}
-          {!loading && monitors.length === 0 && (
-            <div className="text-zinc-600 text-sm text-center py-12">
-              No hay monitores. Agrega uno arriba ↑
-            </div>
-          )}
-          {monitors.map((m) => (
-            <div
-              key={m.id}
-              className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 hover:border-zinc-700 transition-colors"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-4">
-                  <div
-                    className={`w-2.5 h-2.5 rounded-full ${
-                      m.last_status === null
-                        ? "bg-zinc-600"
-                        : m.last_status
-                          ? "bg-green-400"
-                          : "bg-red-500"
-                    }`}
-                    style={
-                      m.last_status ? { boxShadow: "0 0 8px #4ade80" } : {}
-                    }
-                  />
-                  <div>
-                    <p className="font-semibold text-white text-sm">{m.name}</p>
-                    <p className="text-zinc-500 text-xs mt-0.5">{m.url}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-8 text-sm">
-                  <div className="text-right">
-                    <p className="text-zinc-500 text-xs">Uptime</p>
-                    <p className="font-bold text-white">{uptime(m)}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-zinc-500 text-xs">Latencia</p>
-                    <p className="font-bold text-white">
-                      {m.avg_latency ? Math.round(m.avg_latency) + "ms" : "—"}
-                    </p>
-                  </div>
-                  <div
-                    className={`text-xs font-bold px-3 py-1 rounded-full ${
-                      m.last_status === null
-                        ? "bg-zinc-800 text-zinc-500"
-                        : m.last_status
-                          ? "bg-green-500/10 text-green-400"
-                          : "bg-red-500/10 text-red-400"
-                    }`}
-                  >
-                    {m.last_status === null
-                      ? "PENDIENTE"
-                      : m.last_status
-                        ? "ONLINE"
-                        : "OFFLINE"}
-                  </div>
-                </div>
-              </div>
-              {/* Barra de historial */}
-              <div className="flex items-center justify-between">
-                <UptimeBar checks={checks[m.id] ?? []} />
-                <span className="text-zinc-600 text-xs ml-3">
-                  últimos 90 checks
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
+      <div className="flex gap-4 flex-wrap justify-center">
+        <Link
+          href="/dashboard"
+          className="bg-green-500 hover:bg-green-400 text-black font-bold px-6 py-3 rounded-lg transition-colors"
+        >
+          Ir al Dashboard
+        </Link>
+        <Link
+          href="/map"
+          className="border border-zinc-700 hover:border-zinc-500 text-white px-6 py-3 rounded-lg transition-colors"
+        >
+          Ver Mapa
+        </Link>
+        <Link
+          href="/status"
+          className="border border-zinc-700 hover:border-green-500/50 text-zinc-400 hover:text-green-400 px-6 py-3 rounded-lg transition-colors text-sm"
+        >
+          Ver Status →
+        </Link>
       </div>
-    </div>
+
+      <p className="text-zinc-600 text-sm">
+        Desplegado en{" "}
+        <a
+          href="https://cubepath.com"
+          target="_blank"
+          className="text-green-600 hover:text-green-400"
+        >
+          CubePath
+        </a>
+      </p>
+    </main>
   );
 }
