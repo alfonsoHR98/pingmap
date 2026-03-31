@@ -163,7 +163,7 @@ export default function MonitorDetail() {
                 color: "#fff",
                 fontSize: "12px",
               }}
-              formatter={(val: number) => [`${val}ms`, "latencia"]}
+              formatter={(val: unknown) => [`${val}ms`, "latencia"]}
             />
             <Line
               type="monotone"
