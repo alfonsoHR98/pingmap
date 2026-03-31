@@ -60,7 +60,7 @@ PingMap está desplegado en un **VPS gp.nano de CubePath** (Houston, Texas):
 - 1 vCPU / 2GB RAM / 40GB SSD NVMe
 - Protección AntiDDoS incluida
 - Ubuntu 24.04 LTS
-- Dominio gratuito: `pingmap.madara.dev`
+- Dominio propio (DONDOMINIO): `pingmap.madara.dev`
 - HTTPS con Let's Encrypt automático
 - Nginx como proxy inverso al puerto 3000
 
