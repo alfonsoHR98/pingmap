@@ -1,17 +1,52 @@
+'use client'
+
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
+
+interface Stats {
+  total_monitors: number
+  total_checks: number
+  uptime_percent: number
+}
 
 export default function Home() {
+  const [stats, setStats] = useState<Stats | null>(null)
+
+  useEffect(() => {
+    fetch('/api/stats').then(r => r.json()).then(setStats)
+  }, [])
+
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center gap-8 p-8">
+    <main className="min-h-screen flex flex-col items-center justify-center gap-12 p-8 bg-zinc-950">
+      {/* Hero */}
       <div className="text-center">
-        <h1 className="text-5xl font-bold text-white mb-4">
+        <div className="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-full px-4 py-1.5 text-green-400 text-xs font-semibold mb-6">
+          <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block"/>
+          LIVE — Monitoreando en tiempo real
+        </div>
+        <h1 className="text-6xl font-bold text-white mb-4">
           Ping<span className="text-green-400">Map</span>
         </h1>
-        <p className="text-zinc-400 text-lg max-w-md">
+        <p className="text-zinc-400 text-lg max-w-md mx-auto">
           Monitorea tus servicios en tiempo real y visualízalos en un mapa mundial
         </p>
       </div>
 
+      {/* Stats */}
+      <div className="grid grid-cols-3 gap-6 w-full max-w-lg">
+        {[
+          { label: 'Monitores', value: stats?.total_monitors ?? '—' },
+          { label: 'Checks realizados', value: stats?.total_checks ?? '—' },
+          { label: 'Uptime global', value: stats?.uptime_percent ? `${stats.uptime_percent}%` : '—' },
+        ].map(s => (
+          <div key={s.label} className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-center">
+            <p className="text-2xl font-bold text-white">{s.value}</p>
+            <p className="text-zinc-500 text-xs mt-1">{s.label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* CTAs */}
       <div className="flex gap-4">
         <Link
           href="/dashboard"
@@ -27,12 +62,12 @@ export default function Home() {
         </Link>
       </div>
 
-      <div className="text-zinc-600 text-sm">
+      <p className="text-zinc-600 text-sm">
         Desplegado en{' '}
         <a href="https://cubepath.com" target="_blank" className="text-green-600 hover:text-green-400">
           CubePath
         </a>
-      </div>
+      </p>
     </main>
   )
 }
