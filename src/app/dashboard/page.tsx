@@ -26,6 +26,11 @@ export default function Dashboard() {
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
   const [adding, setAdding] = useState(false);
+  const [stats, setStats] = useState<{
+    total_monitors: number;
+    total_checks: number;
+    uptime_percent: number;
+  } | null>(null);
 
   async function fetchMonitors() {
     const res = await fetch("/api/monitors");
@@ -41,6 +46,9 @@ export default function Dashboard() {
         }
       } catch {}
     });
+    fetch("/api/stats")
+      .then((r) => r.json())
+      .then(setStats);
   }
 
   async function addMonitor() {
@@ -85,6 +93,30 @@ export default function Dashboard() {
             Ver Mapa →
           </a>
         </div>
+
+        {/* Stats globales */}
+        {stats && (
+          <div className="grid grid-cols-3 gap-4 mb-8">
+            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-center">
+              <p className="text-3xl font-bold text-white">
+                {stats.total_monitors}
+              </p>
+              <p className="text-zinc-500 text-xs mt-1">Monitores activos</p>
+            </div>
+            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-center">
+              <p className="text-3xl font-bold text-white">
+                {stats.total_checks}
+              </p>
+              <p className="text-zinc-500 text-xs mt-1">Checks realizados</p>
+            </div>
+            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-center">
+              <p className="text-3xl font-bold text-green-400">
+                {stats.uptime_percent ?? 100}%
+              </p>
+              <p className="text-zinc-500 text-xs mt-1">Uptime global</p>
+            </div>
+          </div>
+        )}
 
         <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 mb-8">
           <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4">
