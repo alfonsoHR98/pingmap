@@ -31,9 +31,11 @@ function getCoords(url: string): [number, number] {
 
 export default function MapView({ monitors }: { monitors: Monitor[] }) {
   useEffect(() => {
-    // Fix leaflet icon en Next.js
-    // @ts-expect-error leaflet types
-    delete window.L?.Icon?.Default?.prototype?._getIconUrl;
+    if (typeof window !== "undefined") {
+      // Fix leaflet icon en Next.js
+      const L = require("leaflet");
+      delete L.Icon.Default.prototype._getIconUrl;
+    }
   }, []);
 
   return (
