@@ -2,14 +2,14 @@
 
 > Monitor de uptime en tiempo real con visualización geográfica mundial
 
-[![Demo](https://img.shields.io/badge/Demo-Live-green?style=for-the-badge)](https://vps23896.cubepath.net)
+[![Demo](https://img.shields.io/badge/Demo-Live-green?style=for-the-badge)](https://pingmap.madara.dev)
 [![CubePath](https://img.shields.io/badge/Desplegado%20en-CubePath-00C853?style=for-the-badge&logo=cloud&logoColor=white)](https://cubepath.com)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org)
 [![Bun](https://img.shields.io/badge/Bun-1.3-fbf0df?style=for-the-badge&logo=bun)](https://bun.sh)
 
 ## 🔗 Demo en vivo
 
-**[https://vps23896.cubepath.net](https://vps23896.cubepath.net)**
+**[https://pingmap.madara.dev](https://pingmap.madara.dev)**
 
 ---
 
@@ -60,7 +60,7 @@ PingMap está desplegado en un **VPS gp.nano de CubePath** (Houston, Texas):
 - 1 vCPU / 2GB RAM / 40GB SSD NVMe
 - Protección AntiDDoS incluida
 - Ubuntu 24.04 LTS
-- Dominio gratuito: `vps23896.cubepath.net`
+- Dominio gratuito: `pingmap.madara.dev`
 - HTTPS con Let's Encrypt automático
 - Nginx como proxy inverso al puerto 3000
 
