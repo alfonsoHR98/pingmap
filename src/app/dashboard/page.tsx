@@ -170,7 +170,8 @@ export default function Dashboard() {
           {monitors.map((m) => (
             <div
               key={m.id}
-              className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 hover:border-zinc-700 transition-colors"
+              onClick={() => (window.location.href = `/monitors/${m.id}`)}
+              className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 hover:border-zinc-700 transition-colors cursor-pointer"
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-4">
