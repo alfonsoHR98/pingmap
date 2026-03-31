@@ -27,3 +27,25 @@ export async function GET(
     return NextResponse.json({ error: "No encontrado" }, { status: 404 });
   return NextResponse.json(rows[0]);
 }
+
+export async function DELETE(
+  _: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+  await query(`DELETE FROM monitors WHERE id = $1`, [id]);
+  return NextResponse.json({ ok: true });
+}
+
+export async function PATCH(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+  const { sort_order } = await req.json();
+  await query(`UPDATE monitors SET sort_order = $1 WHERE id = $2`, [
+    sort_order,
+    id,
+  ]);
+  return NextResponse.json({ ok: true });
+}
